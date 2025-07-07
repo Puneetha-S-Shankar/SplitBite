@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background: #e5e5e5;
+  font-family: 'Inter', Arial, sans-serif;
+  color: #222;
+}
+
+/* Remove border radius globally for a boxy look */
+* {
+  border-radius: 0 !important;
+}
+
+/* Section headers */
+.section-header {
+  background: #a65555;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 500;
+  padding: 1.5rem 2rem;
+  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+/* Main title */
+.main-title {
+  background: #f7b3b3;
+  color: #fff;
+  font-size: 3rem;
+  font-weight: 600;
+  padding: 1.2rem 0;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* Large dark button */
+.big-dark-btn {
+  background: #3a1818;
+  color: #fff;
+  font-size: 2rem;
+  font-weight: 400;
+  padding: 2.5rem 0;
+  width: 60%;
+  margin: 3rem auto 0 auto;
+  display: block;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: background 0.2s;
+}
+.big-dark-btn:hover {
+  background: #2a1010;
+} 
