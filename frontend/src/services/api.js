@@ -1,6 +1,6 @@
 // src/services/api.js
 
-const BASE_URL = 'https://splitbite.onrender.com'; // Change this to your backend URL if deployed
+const BASE_URL = 'https://splitbite.onrender.com/api/bills'; // Change this to your backend URL if deployed
 
 export async function createBill(data) {
   const res = await fetch(BASE_URL, {
