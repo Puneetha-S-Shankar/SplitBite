@@ -13,7 +13,7 @@ const MyBills = ({ onBack }) => {
       setError('');
       try {
         const token = localStorage.getItem('token');
-        const res = await fetch('http://localhost:5000/api/bills', {
+        const res = await fetch('https://splitbite.onrender.com/api/bills', {
           headers: { 'Authorization': `Bearer ${token}` },
         });
         if (!res.ok) {
