@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TrendingUp, DollarSign, CheckCircle, AlertCircle } from 'lucide-react';
+import { TrendingUp, DollarSign, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 
 const ResultDisplay = ({ personTotals, totalBill, taxAmount, people, dishes, assignments }) => {
   const [saveStatus, setSaveStatus] = useState('idle'); // idle | saving | success | error
@@ -132,8 +132,28 @@ const ResultDisplay = ({ personTotals, totalBill, taxAmount, people, dishes, ass
         <button
           onClick={handleSaveBill}
           disabled={saveStatus === 'saving' || saveStatus === 'success'}
-          className={`px-6 py-2 font-bold border border-black bg-black text-white hover:bg-gray-900 transition ${saveStatus === 'success' ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`enhanced-btn big-dark-btn save-bill-btn ${saveStatus === 'success' ? 'opacity-60 cursor-not-allowed' : ''}`}
+          style={{
+            width: 260,
+            fontSize: '1.25rem',
+            padding: '1.1rem 0',
+            margin: '1.5rem auto 0 auto',
+            background: saveStatus === 'success' ? '#bbf7d0' : '#fbbf24',
+            color: saveStatus === 'success' ? '#15803d' : '#7c3f00',
+            border: '2px solid #fbbf24',
+            fontWeight: 800,
+            letterSpacing: '1px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 12,
+            boxShadow: '0 4px 16px rgba(251,191,36,0.08)',
+            borderRadius: 8,
+            transition: 'background 0.2s, color 0.2s, border 0.2s',
+          }}
         >
+          {saveStatus === 'saving' && <Loader2 className="animate-spin" size={22} />}
+          {saveStatus === 'success' && <CheckCircle size={22} />}
           {saveStatus === 'saving' ? 'Saving...' : saveStatus === 'success' ? 'Saved!' : 'Save Bill'}
         </button>
         {message && <div className={`mt-2 text-sm ${saveStatus === 'success' ? 'text-green-600' : 'text-red-600'}`}>{message}</div>}
