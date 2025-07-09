@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const API_URL = 'http://localhost:5000/api/auth';
+const API_URL = 'https://splitbite.onrender.com';
 
 const AuthForm = ({ onAuthSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
