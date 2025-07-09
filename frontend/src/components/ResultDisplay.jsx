@@ -12,7 +12,7 @@ const ResultDisplay = ({ personTotals, totalBill, taxAmount, people, dishes, ass
     setMessage('');
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch('https://splitbite.onrender.com', {
+      const res = await fetch('https://splitbite.onrender.com/api/bills', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
