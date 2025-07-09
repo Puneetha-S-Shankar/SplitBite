@@ -5,6 +5,65 @@ import DishInputForm from './components/DishInputForm';
 import DishAssignmentForm from './components/DishAssignmentForm';
 import TaxInput from './components/TaxInput';
 import ResultDisplay from './components/ResultDisplay';
+import AuthForm from './components/AuthForm';
+import MyBills from './components/MyBills';
+
+const NAV_PAGES = {
+  HOME: 'home',
+  MY_BILLS: 'my_bills',
+  ACCOUNT: 'account',
+  LOGIN: 'login',
+};
+
+const Navbar = ({ isAuthenticated, onLogout, onNav, currentPage }) => (
+  <nav style={{
+    width: '100%',
+    background: '#f5f5f4',
+    borderBottom: '2px solid #e5e5e5',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0.5rem 0',
+    marginBottom: '2rem',
+    boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+    zIndex: 10,
+    position: 'sticky',
+    top: 0,
+  }}>
+    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+      {isAuthenticated ? (
+        <>
+          <button
+            className={`navbar-btn${currentPage === NAV_PAGES.HOME ? ' active' : ''}`}
+            onClick={() => onNav(NAV_PAGES.HOME)}
+            style={{ minWidth: 90 }}
+          >Home</button>
+          <button
+            className={`navbar-btn${currentPage === NAV_PAGES.MY_BILLS ? ' active' : ''}`}
+            onClick={() => onNav(NAV_PAGES.MY_BILLS)}
+            style={{ minWidth: 90 }}
+          >Your Bills</button>
+          <button
+            className={`navbar-btn${currentPage === NAV_PAGES.ACCOUNT ? ' active' : ''}`}
+            onClick={() => onNav(NAV_PAGES.ACCOUNT)}
+            style={{ minWidth: 90 }}
+          >Your Account</button>
+          <button
+            className="navbar-btn logout"
+            onClick={onLogout}
+            style={{ minWidth: 90 }}
+          >Logout</button>
+        </>
+      ) : (
+        <button
+          className={`navbar-btn${currentPage === NAV_PAGES.LOGIN ? ' active' : ''}`}
+          onClick={() => onNav(NAV_PAGES.LOGIN)}
+          style={{ minWidth: 90 }}
+        >Login</button>
+      )}
+    </div>
+  </nav>
+);
 
 const App = () => {
   const [people, setPeople] = useState([]);
@@ -15,6 +74,9 @@ const App = () => {
   const [isCalculating, setIsCalculating] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [showCelebration, setShowCelebration] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('token'));
+  const [showMyBills, setShowMyBills] = useState(false);
+  const [page, setPage] = useState(NAV_PAGES.LOGIN);
 
   // Auto-advance steps based on data
   useEffect(() => {
@@ -146,274 +208,125 @@ const App = () => {
   const completedSteps = steps.filter(step => step.completed).length;
   const progressPercentage = (completedSteps / steps.length) * 100;
 
+  const handleAuthSuccess = () => {
+    setIsAuthenticated(true);
+    setPage(NAV_PAGES.MY_BILLS);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsAuthenticated(false);
+    setPage(NAV_PAGES.LOGIN);
+  };
+
+  // Navigation logic
+  useEffect(() => {
+    if (!isAuthenticated) setPage(NAV_PAGES.LOGIN);
+    else if (page === NAV_PAGES.LOGIN) setPage(NAV_PAGES.MY_BILLS);
+  }, [isAuthenticated]);
+
+  // Render logic
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Enhanced animated background */}
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-br from-amber-50 via-orange-50 to-red-50"></div>
-        
-        {/* Floating elements */}
-        <div className="absolute top-10 left-10 w-24 h-24 bg-gradient-to-br from-orange-400 to-red-500 rounded-full opacity-20 animate-bounce blur-xl"></div>
-        <div className="absolute top-40 right-20 w-20 h-20 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full opacity-20 animate-pulse blur-lg"></div>
-        <div className="absolute bottom-20 left-20 w-32 h-32 bg-gradient-to-br from-red-400 to-pink-500 rounded-full opacity-20 animate-bounce blur-xl" style={{ animationDelay: '1s' }}></div>
-        <div className="absolute bottom-40 right-10 w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-full opacity-20 animate-pulse blur-lg" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute top-1/2 left-1/3 w-28 h-28 bg-gradient-to-br from-amber-400 to-orange-600 rounded-full opacity-10 animate-bounce blur-2xl" style={{ animationDelay: '3s' }}></div>
-        
-        {/* Grid pattern overlay */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="w-full h-full" style={{
-            backgroundImage: 'radial-gradient(circle at 1px 1px, rgb(251, 146, 60) 1px, transparent 0)',
-            backgroundSize: '50px 50px'
-          }}></div>
-        </div>
-      </div>
-
-      {/* Celebration Animation */}
-      {showCelebration && (
-        <div className="fixed inset-0 z-50 pointer-events-none">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="animate-ping">
-              <Sparkles className="w-32 h-32 text-yellow-400 opacity-80" />
+    <>
+      <Navbar
+        isAuthenticated={isAuthenticated}
+        onLogout={handleLogout}
+        onNav={setPage}
+        currentPage={page}
+      />
+      <div className="min-h-screen flex flex-col items-center justify-start py-8">
+        <div className="w-full max-w-5xl mx-auto">
+          {(!isAuthenticated && page === NAV_PAGES.LOGIN) && (
+            <AuthForm onAuthSuccess={handleAuthSuccess} />
+          )}
+          {(isAuthenticated && page === NAV_PAGES.MY_BILLS) && (
+            <MyBills onBack={() => setPage(NAV_PAGES.HOME)} />
+          )}
+          {(isAuthenticated && page === NAV_PAGES.ACCOUNT) && (
+            <div className="enhanced-card" style={{ padding: '2rem', marginTop: '2rem', textAlign: 'center' }}>
+              <h2 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '1rem' }}>Your Account</h2>
+              <p>Account details and settings coming soon.</p>
             </div>
-          </div>
-          {/* Confetti-like elements */}
-          {[...Array(20)].map((_, i) => (
-            <div
-              key={i}
-              className="absolute animate-bounce"
-              style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 2}s`,
-                animationDuration: `${1 + Math.random() * 2}s`
-              }}
-            >
-              <div className={`w-3 h-3 rounded-full bg-gradient-to-br ${
-                ['from-yellow-400 to-orange-500', 'from-orange-400 to-red-500', 'from-red-400 to-pink-500'][Math.floor(Math.random() * 3)]
-              }`}></div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-start py-8">
-        <div className="w-full max-w-7xl mx-auto px-4">
-          {/* Enhanced Hero Title */}
-          <div className="text-center mb-12 relative">
-            <div className="main-title relative group">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-700 rounded-3xl blur-xl opacity-30 group-hover:opacity-50 transition-opacity duration-300"></div>
-              <div className="relative flex items-center justify-center gap-6">
-                <Sparkles className="w-16 h-16 text-yellow-300 animate-pulse" />
-                <span className="bg-gradient-to-r from-white to-yellow-100 bg-clip-text text-transparent">
-                  SplitBITE
-                </span>
-                <Sparkles className="w-16 h-16 text-yellow-300 animate-pulse" />
-              </div>
-              <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2">
-                <div className="text-lg font-medium text-yellow-200 opacity-90 animate-pulse">
-                  ✨ Smart Bill Splitting Made Easy ✨
+          )}
+          {(isAuthenticated && page === NAV_PAGES.HOME) && (
+            <>
+              {/* Hero/Header Section */}
+              <div style={{
+                background: 'linear-gradient(90deg, #fa8231 0%, #f76d6d 100%)',
+                color: '#fff',
+                borderRadius: '2rem',
+                padding: '2.5rem 1rem 3.5rem 1rem',
+                marginBottom: '2.5rem',
+                boxShadow: '0 8px 32px rgba(250,130,49,0.12)',
+                textAlign: 'center',
+                position: 'relative',
+              }}>
+                <div style={{ fontSize: '2.8rem', fontWeight: 800, letterSpacing: '-2px', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
+                  <span style={{ fontSize: '2.2rem' }}>✨</span>
+                  <span>SplitBITE</span>
+                  <span style={{ fontSize: '2.2rem' }}>✨</span>
+                </div>
+                  <div style={{ fontSize: '2.2rem', fontWeight: 700, letterSpacing: '-1px', textShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+                  Smart Bill Splitting Made Easy
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Enhanced Progress Section */}
-          <div className="mb-12 bg-white/20 backdrop-blur-2xl rounded-3xl p-8 border-2 border-white/30 shadow-2xl relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-red-500/10"></div>
-            
-            {/* Progress Bar */}
-            <div className="relative mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-2xl font-bold text-orange-800">Your Progress</h3>
-                <div className="flex items-center gap-2">
-                  <TrendingUp className="w-6 h-6 text-orange-600" />
-                  <span className="text-xl font-bold text-orange-700">{Math.round(progressPercentage)}%</span>
-                </div>
+              {/* Main Content with Enhanced Spacing */}
+              <div className="space-y-8">
+                <PeopleInputForm 
+                  people={people}
+                  onAddPerson={addPerson}
+                  onRemovePerson={removePerson}
+                />
+                <DishInputForm 
+                  dishes={dishes}
+                  onAddDish={addDish}
+                  onRemoveDish={removeDish}
+                />
+                <DishAssignmentForm 
+                  dishes={dishes}
+                  people={people}
+                  onToggleConsumer={toggleConsumer}
+                />
+                <TaxInput 
+                  taxAmount={taxAmount}
+                  onTaxChange={setTaxAmount}
+                />
               </div>
-              <div className="w-full h-3 bg-white/30 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-orange-500 to-red-600 rounded-full transition-all duration-1000 ease-out relative"
-                  style={{ width: `${progressPercentage}%` }}
+              {/* Main Action Buttons */}
+              <div className="flex flex-col items-center gap-6 mt-16">
+                <button
+                  onClick={calculateBill}
+                  disabled={isCalculating}
+                  className="big-dark-btn"
                 >
-                  <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Step Indicators */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              {steps.map((step, index) => (
-                <div key={step.number} className="relative">
-                  <div className={`
-                    relative p-6 rounded-2xl border-2 transition-all duration-500 group cursor-pointer
-                    ${step.completed 
-                      ? 'bg-gradient-to-br from-green-500 to-emerald-600 border-green-400 text-white shadow-lg shadow-green-500/30' 
-                      : currentStep === step.number 
-                        ? 'bg-gradient-to-br from-orange-500 to-red-600 border-orange-400 text-white shadow-lg shadow-orange-500/30 animate-pulse' 
-                        : 'bg-white/20 border-white/40 text-orange-800 hover:bg-white/30'
-                    }
-                  `}>
-                    <div className="flex items-center justify-center mb-3">
-                      <step.icon size={32} className="group-hover:scale-110 transition-transform duration-300" />
-                    </div>
-                    <h4 className="font-bold text-lg mb-2">{step.title}</h4>
-                    <p className="text-sm opacity-90">{step.description}</p>
-                    
-                    {step.completed && (
-                      <div className="absolute -top-2 -right-2">
-                        <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
-                          <Zap className="w-4 h-4 text-yellow-800" />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Enhanced Stats Dashboard */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <div className="bg-white/20 backdrop-blur-xl rounded-2xl p-6 border-2 border-white/30 shadow-xl hover:shadow-2xl transition-all duration-300 group">
-              <div className="flex items-center justify-between mb-3">
-                <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Users className="text-white w-6 h-6" />
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium text-orange-700 opacity-80">People</p>
-                  <p className="text-3xl font-bold text-orange-800">{people.length}</p>
-                </div>
-              </div>
-              <div className="h-2 bg-white/30 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-500" style={{ width: `${Math.min(people.length * 25, 100)}%` }}></div>
-              </div>
-            </div>
-
-            <div className="bg-white/20 backdrop-blur-xl rounded-2xl p-6 border-2 border-white/30 shadow-xl hover:shadow-2xl transition-all duration-300 group">
-              <div className="flex items-center justify-between mb-3">
-                <div className="p-3 bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <UtensilsCrossed className="text-white w-6 h-6" />
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium text-orange-700 opacity-80">Dishes</p>
-                  <p className="text-3xl font-bold text-orange-800">{dishes.length}</p>
-                </div>
-              </div>
-              <div className="h-2 bg-white/30 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-green-500 to-emerald-600 rounded-full transition-all duration-500" style={{ width: `${Math.min(dishes.length * 20, 100)}%` }}></div>
-              </div>
-            </div>
-
-            <div className="bg-white/20 backdrop-blur-xl rounded-2xl p-6 border-2 border-white/30 shadow-xl hover:shadow-2xl transition-all duration-300 group">
-              <div className="flex items-center justify-between mb-3">
-                <div className="p-3 bg-gradient-to-br from-orange-500 to-red-600 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Receipt className="text-white w-6 h-6" />
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium text-orange-700 opacity-80">Total Bill</p>
-                  <p className="text-3xl font-bold text-orange-800">₹{totalBill.toFixed(2)}</p>
-                </div>
-              </div>
-              <div className="h-2 bg-white/30 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-orange-500 to-red-600 rounded-full transition-all duration-500" style={{ width: `${Math.min(totalBill / 10, 100)}%` }}></div>
-              </div>
-            </div>
-
-            <div className="bg-white/20 backdrop-blur-xl rounded-2xl p-6 border-2 border-white/30 shadow-xl hover:shadow-2xl transition-all duration-300 group">
-              <div className="flex items-center justify-between mb-3">
-                <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <Calculator className="text-white w-6 h-6" />
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-medium text-orange-700 opacity-80">Status</p>
-                  <p className="text-lg font-bold text-orange-800">
-                    {showResults ? '✅ Complete' : '⏳ In Progress'}
-                  </p>
-                </div>
-              </div>
-              <div className="h-2 bg-white/30 rounded-full overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-purple-500 to-pink-600 rounded-full transition-all duration-500" style={{ width: `${showResults ? 100 : progressPercentage}%` }}></div>
-              </div>
-            </div>
-          </div>
-
-          {/* Main Content with Enhanced Spacing */}
-          <div className="space-y-8">
-            <PeopleInputForm 
-              people={people}
-              onAddPerson={addPerson}
-              onRemovePerson={removePerson}
-            />
-            
-            <DishInputForm 
-              dishes={dishes}
-              onAddDish={addDish}
-              onRemoveDish={removeDish}
-            />
-            
-            <DishAssignmentForm 
-              dishes={dishes}
-              people={people}
-              onToggleConsumer={toggleConsumer}
-            />
-            
-            <TaxInput 
-              taxAmount={taxAmount}
-              onTaxChange={setTaxAmount}
-            />
-          </div>
-
-          {/* Enhanced Action Buttons */}
-          <div className="flex flex-col items-center gap-6 mt-16">
-            <button
-              onClick={calculateBill}
-              disabled={isCalculating}
-              className={`
-                relative group overflow-hidden px-12 py-6 bg-gradient-to-r from-orange-600 to-red-700 text-white rounded-2xl font-bold text-xl shadow-2xl transition-all duration-300 transform hover:scale-105 active:scale-95
-                ${isCalculating ? 'opacity-70 cursor-not-allowed' : 'hover:shadow-3xl'}
-              `}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative flex items-center justify-center gap-4">
-                {isCalculating ? (
-                  <>
-                    <div className="animate-spin w-8 h-8 border-3 border-white border-t-transparent rounded-full"></div>
-                    <span>Calculating Magic...</span>
-                  </>
-                ) : (
-                  <>
-                    <Calculator size={32} className="group-hover:rotate-12 transition-transform duration-300" />
-                    <span>Calculate Everyone's Share</span>
-                    <Sparkles size={24} className="animate-pulse" />
-                  </>
+                  {isCalculating ? 'Calculating Magic...' : "Calculate everyone's share"}
+                </button>
+                {(people.length > 0 || dishes.length > 0) && (
+                  <button
+                    onClick={resetAll}
+                    className="big-dark-btn"
+                    style={{ background: '#a65555', marginTop: '1rem' }}
+                  >
+                    Start Over
+                  </button>
                 )}
               </div>
-            </button>
-            
-            {(people.length > 0 || dishes.length > 0) && (
-              <button
-                onClick={resetAll}
-                className="flex items-center gap-3 px-8 py-4 bg-white/20 backdrop-blur-xl border-2 border-white/30 rounded-xl text-orange-800 hover:bg-white/30 transition-all duration-300 font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 active:scale-95"
-              >
-                <RotateCcw size={24} className="group-hover:rotate-180 transition-transform duration-500" />
-                <span>Start Over</span>
-              </button>
-            )}
-          </div>
-
-          {/* Enhanced Results Section */}
-          {showResults && (
-            <div className="mt-16 animate-fadeIn">
-              <ResultDisplay 
-                personTotals={personTotals}
-                totalBill={totalBill}
-                taxAmount={parseFloat(taxAmount) || 0}
-              />
-            </div>
+              {showResults && (
+                <div className="mt-10">
+                  <ResultDisplay 
+                    personTotals={personTotals}
+                    totalBill={totalBill}
+                    taxAmount={parseFloat(taxAmount) || 0}
+                    people={people}
+                    dishes={dishes}
+                  />
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

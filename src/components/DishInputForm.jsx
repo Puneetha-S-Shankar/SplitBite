@@ -13,23 +13,18 @@ const DishInputForm = ({ dishes, onAddDish, onRemoveDish }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-2xl p-6 mb-8 border border-orange-100 shadow-lg">
-      <h2 className="text-2xl font-bold text-orange-900 mb-6 flex items-center gap-3">
-        <div className="p-2 bg-gradient-to-br from-orange-400 to-amber-500 rounded-lg shadow-md">
-          <UtensilsCrossed className="text-white" size={24} />
-        </div>
-        <span className="bg-gradient-to-r from-orange-700 to-amber-700 bg-clip-text text-transparent">
-          What and all did you guys eat
-        </span>
+    <div style={{ background: '#fff', border: '2px solid #a65555', padding: '2rem', marginBottom: '2rem' }}>
+      <h2 style={{ color: '#a65555', fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <UtensilsCrossed style={{ color: '#a65555' }} size={28} />
+        What and all did you guys eat
       </h2>
-      
-      <form onSubmit={handleSubmit} className="flex gap-3 mb-6">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
         <input
           type="text"
           value={dishInput.name}
           onChange={(e) => setDishInput({ ...dishInput, name: e.target.value })}
           placeholder="Dish name"
-          className="flex-1 px-5 py-3 border-2 border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none bg-white/80 backdrop-blur-sm shadow-md transition-all duration-300 placeholder-orange-600/60 text-lg"
+          style={{ flex: 1, padding: '0.75rem 1rem', border: '2px solid #a65555', fontSize: '1.1rem', outline: 'none', background: '#f7f7f7', color: '#222', fontWeight: 500 }}
         />
         <input
           type="number"
@@ -38,45 +33,40 @@ const DishInputForm = ({ dishes, onAddDish, onRemoveDish }) => {
           placeholder="Cost"
           step="0.01"
           min="0"
-          className="w-32 px-5 py-3 border-2 border-orange-200 rounded-xl focus:ring-2 focus:ring-orange-400 focus:border-orange-400 outline-none bg-white/80 backdrop-blur-sm shadow-md transition-all duration-300 placeholder-orange-600/60 text-lg"
+          style={{ width: '8rem', padding: '0.75rem 1rem', border: '2px solid #a65555', fontSize: '1.1rem', outline: 'none', background: '#f7f7f7', color: '#222', fontWeight: 500 }}
         />
         <button
           type="submit"
-          className="px-7 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-xl hover:from-orange-600 hover:to-amber-600 transition-all duration-300 flex items-center gap-2 font-semibold shadow-lg transform hover:scale-105 active:scale-95 text-lg"
+          style={{ padding: '0.75rem 2rem', background: '#a65555', color: '#fff', fontWeight: 600, fontSize: '1.1rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
         >
           <Plus size={22} />
           Add Dish
         </button>
       </form>
-
-      <div className="space-y-4">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
         {dishes.map((dish) => (
-          <div key={dish.id} className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border-2 border-orange-200 flex items-center justify-between shadow-md hover:shadow-lg transition-all duration-300 group">
+          <div key={dish.id} style={{ background: '#f7b3b3', color: '#fff', padding: '1rem 1.5rem', border: '2px solid #a65555', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontWeight: 600 }}>
             <div>
-              <h3 className="font-bold text-orange-900 text-lg">
-                {dish.name}
-              </h3>
-              <p className="text-orange-600 font-semibold text-lg">
-                ₹{dish.cost.toFixed(2)}
-              </p>
+              <h3 style={{ fontWeight: 700, fontSize: '1.1rem', color: '#fff', marginBottom: '0.25rem' }}>{dish.name}</h3>
+              <p style={{ color: '#fff', fontWeight: 600, fontSize: '1.1rem' }}>₹{dish.cost.toFixed(2)}</p>
             </div>
             <button
               onClick={() => onRemoveDish(dish.id)}
-              className="text-orange-600 hover:text-red-500 transition-colors duration-300 p-2 rounded-full hover:bg-red-50 group-hover:scale-110"
+              style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: 0, marginLeft: '0.5rem' }}
+              title="Remove"
             >
               <Trash2 size={20} />
             </button>
           </div>
         ))}
       </div>
-      
       {dishes.length === 0 && (
-        <div className="text-center py-8">
-          <div className="text-orange-400 mb-2">
-            <UtensilsCrossed size={48} className="mx-auto opacity-50" />
+        <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+          <div style={{ color: '#f7b3b3', marginBottom: '0.5rem' }}>
+            <UtensilsCrossed size={48} style={{ opacity: 0.5 }} />
           </div>
-          <p className="text-orange-600/70 italic font-medium">No dishes added yet</p>
-          <p className="text-orange-500/50 text-sm mt-1">Add dishes to split the bill</p>
+          <p style={{ color: '#a65555', fontStyle: 'italic', fontWeight: 500 }}>No dishes added yet</p>
+          <p style={{ color: '#a65555', opacity: 0.6, fontSize: '1rem', marginTop: '0.5rem' }}>Add dishes to split the bill</p>
         </div>
       )}
     </div>

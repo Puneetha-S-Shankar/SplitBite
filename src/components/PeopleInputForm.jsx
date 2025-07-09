@@ -13,54 +13,48 @@ const PeopleInputForm = ({ people, onAddPerson, onRemovePerson }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 mb-8 border border-amber-100 shadow-lg">
-      <h2 className="text-2xl font-bold text-amber-900 mb-6 flex items-center gap-3">
-        <div className="p-2 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg shadow-md">
-          <Users className="text-white" size={24} />
-        </div>
-        <span className="bg-gradient-to-r from-amber-700 to-orange-700 bg-clip-text text-transparent">
-          Add your friends
-        </span>
+    <div style={{ background: '#fff', border: '2px solid #a65555', padding: '2rem', marginBottom: '2rem' }}>
+      <h2 style={{ color: '#a65555', fontSize: '1.5rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <Users style={{ color: '#a65555' }} size={28} />
+        Add your friends
       </h2>
-      
-      <form onSubmit={handleSubmit} className="flex gap-3 mb-6">
+      <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '1rem', marginBottom: '1.5rem' }}>
         <input
           type="text"
           value={personInput}
           onChange={(e) => setPersonInput(e.target.value)}
           placeholder="Enter person name"
-          className="flex-1 px-5 py-3 border-2 border-amber-200 rounded-xl focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none bg-white/80 backdrop-blur-sm shadow-md transition-all duration-300 placeholder-amber-600/60 text-lg"
+          style={{ flex: 1, padding: '0.75rem 1rem', border: '2px solid #a65555', fontSize: '1.1rem', outline: 'none', background: '#f7f7f7', color: '#222', fontWeight: 500 }}
         />
         <button
           type="submit"
-          className="px-7 py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl hover:from-amber-600 hover:to-orange-600 transition-all duration-300 flex items-center gap-2 font-semibold shadow-lg transform hover:scale-105 active:scale-95 text-lg"
+          style={{ padding: '0.75rem 2rem', background: '#a65555', color: '#fff', fontWeight: 600, fontSize: '1.1rem', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
         >
           <Plus size={22} />
           Add Person
         </button>
       </form>
-
-      <div className="flex flex-wrap gap-3">
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
         {people.map((person, index) => (
-          <div key={index} className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full border-2 border-amber-200 shadow-md hover:shadow-lg transition-all duration-300 group">
-            <span className="text-amber-800 font-medium">{person}</span>
+          <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#f7b3b3', color: '#fff', padding: '0.5rem 1.25rem', border: '2px solid #a65555', fontWeight: 600 }}>
+            <span>{person}</span>
             <button
               onClick={() => onRemovePerson(index)}
-              className="text-amber-600 hover:text-red-500 transition-colors duration-300 p-1 rounded-full hover:bg-red-50 group-hover:scale-110"
+              style={{ background: 'none', border: 'none', color: '#fff', cursor: 'pointer', padding: 0, marginLeft: '0.5rem' }}
+              title="Remove"
             >
               <Trash2 size={16} />
             </button>
           </div>
         ))}
       </div>
-      
       {people.length === 0 && (
-        <div className="text-center py-8">
-          <div className="text-amber-400 mb-2">
-            <Users size={48} className="mx-auto opacity-50" />
+        <div style={{ textAlign: 'center', padding: '2rem 0' }}>
+          <div style={{ color: '#f7b3b3', marginBottom: '0.5rem' }}>
+            <Users size={48} style={{ opacity: 0.5 }} />
           </div>
-          <p className="text-amber-600/70 italic font-medium">No people added yet</p>
-          <p className="text-amber-500/50 text-sm mt-1">Add people to get started</p>
+          <p style={{ color: '#a65555', fontStyle: 'italic', fontWeight: 500 }}>No people added yet</p>
+          <p style={{ color: '#a65555', opacity: 0.6, fontSize: '1rem', marginTop: '0.5rem' }}>Add people to get started</p>
         </div>
       )}
     </div>
