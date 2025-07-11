@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
-const API_URL = 'https://splitbite.onrender.com';
+const API_URL = 'https://splitbite.onrender.com/api/auth';
 
 const AuthForm = ({ onAuthSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);  
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showOtp, setShowOtp] = useState(false);
