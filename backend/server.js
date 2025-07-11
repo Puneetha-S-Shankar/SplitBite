@@ -42,6 +42,25 @@ app.use('*', (req, res) => {
   res.status(404).json({ message: 'Route not found', path: req.originalUrl });
 });
 
+// Function to log all registered routes
+function logRoutes(app) {
+  console.log('\n📌 Registered Routes:');
+  app._router.stack.forEach((middleware) => {
+    if (middleware.route) {
+      // Direct route on app
+      console.log(`${Object.keys(middleware.route.methods).join(', ').toUpperCase()}  ${middleware.route.path}`);
+    } else if (middleware.name === 'router' && middleware.handle.stack) {
+      // Router middleware (e.g., authRoutes, billsRoutes)
+      middleware.handle.stack.forEach((handler) => {
+        const route = handler.route;
+        if (route) {
+          console.log(`${Object.keys(route.methods).join(', ').toUpperCase()}  ${middleware.regexp}${route.path}`);
+        }
+      });
+    }
+  });
+}
+
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
@@ -54,6 +73,9 @@ mongoose.connect(process.env.MONGO_URI)
       console.log('  - POST /api/auth/login');
       console.log('  - POST /api/auth/verify-otp');
       console.log('  - POST /api/auth/resend-otp');
+
+      // Log all actual routes loaded
+      logRoutes(app);
     });
   })
   .catch((err) => {
