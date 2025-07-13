@@ -262,9 +262,9 @@ const App = () => {
                 position: 'relative',
               }}>
                 <div style={{ fontSize: '2.8rem', fontWeight: 800, letterSpacing: '-2px', marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
-                  <span style={{ fontSize: '2.2rem' }}>✨</span>
+                  <span style={{ fontSize: '2.2rem' }}></span>
                   <span>SplitBITE</span>
-                  <span style={{ fontSize: '2.2rem' }}>✨</span>
+                  <span style={{ fontSize: '2.2rem' }}></span>
                 </div>
                   <div style={{ fontSize: '2.2rem', fontWeight: 700, letterSpacing: '-1px', textShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
                   Smart Bill Splitting Made Easy
