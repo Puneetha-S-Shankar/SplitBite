@@ -210,7 +210,7 @@ const App = () => {
 
   const handleAuthSuccess = () => {
     setIsAuthenticated(true);
-    setPage(NAV_PAGES.MY_BILLS);
+    setPage(NAV_PAGES.HOME);
   };
 
   const handleLogout = () => {
@@ -222,7 +222,7 @@ const App = () => {
   // Navigation logic
   useEffect(() => {
     if (!isAuthenticated) setPage(NAV_PAGES.LOGIN);
-    else if (page === NAV_PAGES.LOGIN) setPage(NAV_PAGES.MY_BILLS);
+    else if (page === NAV_PAGES.LOGIN) setPage(NAV_PAGES.HOME);
   }, [isAuthenticated]);
 
   // Render logic
